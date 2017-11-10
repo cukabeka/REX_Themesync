@@ -1,1 +1,0 @@
-REX_VALUE[1]

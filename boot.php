@@ -1,6 +1,6 @@
 <?php
 
-$this->setProperty('author', 'Friends Of REDAXO');
+$this->setProperty('author', 'Stefan Beyer');
 
 if (rex::isBackend() && rex::getUser()) {
 
