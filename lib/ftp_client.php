@@ -2,7 +2,7 @@
 
 // http://php.net/manual/de/book.ftp.php
 
-class rex_themesync_ftp_client {
+class rex_themesync_ftp_file {
     private $dir;
     private $name;
     private $is_dir;
@@ -40,8 +40,11 @@ class rex_themesync_ftp_client {
     
 }
 
-class FTPClient { 
+class rex_themesync_ftp_client { 
     private $connection;
+    
+    const DIRS = 1;
+    const FILES = 2;
 
     public function __construct(string $host, int $port = 21, int $timeout = 90) { 
         //$this->connection = \ftp_connect($host, $port, $timeout); 
@@ -68,22 +71,53 @@ class FTPClient {
     }
     
     
-    public function listing() {
+    public function listing($flags = DIRS | FILES) {
         $dir = $this->pwd();
         $raw = $this->rawlist('.');
         //([0-9]+)  
         $pattern = '/^([d\\-]).*[\\s]+([0-9]+)[\\s]+[A-Za-z]+[\\s]+[0-9]+[\\s]+[0-9][0-9]:[0-9][0-9][\\s]+([^\\s]+)$/';
         $list = [];
         foreach ($raw as $r) {
+            
+            
+            $chunks = preg_split("/\s+/", $r);
+            list($item['rights'], $item['number'], $item['user'], $item['group'], $item['size'], $item['month'], $item['day'], $item['time']) = $chunks; 
+            $item['type'] = $chunks[0]{0} === 'd' ? 'directory' : 'file'; 
+            array_splice($chunks, 0, 8);
+            
+            $name = implode(" ", $chunks);    
+            
+            if ($name === '.' || $name === '..') {
+                continue;
+            }
+
+            $is_dir = $item['type'] === 'directory';
+            $size = intval($item['size']);
+            $list[] = new rex_themesync_ftp_file($dir, $name, $is_dir, $size);
+            
+            
+            
+            
+        /*
+            
             if (preg_match($pattern, $r, $m)) {
                 $name = $m[3];
                 if ($name === '.' || $name === '..') {
                     continue;
                 }
                 $is_dir = $m[1]==='d';
+                
+                if ($is_dir && !($flags & DIRS)) {
+                    continue;
+                }
+                if (!$is_dir && !($flags & FILES)) {
+                    continue;
+                }
+                
                 $size = intval($m[2]);
-                $list[] = new File($dir, $name, $is_dir, $size);
+                $list[] = new rex_themesync_ftp_file($dir, $name, $is_dir, $size);
             }
+         */
         }
         return $list;
     }

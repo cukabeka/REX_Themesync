@@ -4,7 +4,7 @@ $this->setProperty('author', 'Stefan Beyer');
 
 if (rex::isBackend() && rex::getUser()) {
 
-  rex_perm::register('modulsammlung[]');
+  rex_perm::register('themesync[]');
 
   rex_extension::register('PACKAGES_INCLUDED', function () {
     if (rex::getUser() && $this->getProperty('compile')) {

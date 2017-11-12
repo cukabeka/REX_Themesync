@@ -1,13 +1,46 @@
 <?php
-$repo = new rex_themesync_sync_localfilesystem([
-    'repo' => rex_path::addonData('themesync', 'repo'),
-        ]);
 
-$local = new rex_themesync_sync_localdb();
 
+print_r($this->getProperty('repo'));
+
+/* @var $repo rex_themesync_repo */
+/* @var $local rex_themesync_local */
+$repo = rex_themesync_repo::get_repo();
+$local = rex_themesync_repo::get_local();
+
+
+/*
+$module = new rex_themesync_module('Code', $repo);
+if ($local->isExisting($module)) {
+    echo 'ja ';
+    #$local->install($module);
+} else {
+    echo 'no ';
+    #$local->install($module);
+}
+
+if ($repo->isExisting($module)) {
+    echo 'ja ';
+    $module->loadInputOutput();
+    #echo htmlentities($module->getInput());
+    $local->install($module);
+} else {
+    echo 'no ';
+    #$local->install($module);
+}
+
+die();
+*/
 
 $repo_modules = $repo->listModules();
 $local_modules = $local->listModules();
+
+#next($local_modules);
+#$mod = current($local_modules);
+#print '<pre>';
+#print_r($mod->getInput());
+#print '</pre>';
+#die();
 
 
 if (rex_post('sync')) {
@@ -31,29 +64,32 @@ if (rex_post('sync')) {
     }
     
     // TODO: redirect!!
-    $repo_modules = $repo->listModules();
+    $local->resetModules();
     $local_modules = $local->listModules();
 }
-#echo '<pre>';
-#print_r($_POST);
-#echo '</pre>';
 
 
 
 
 
-$rex_themesync_render_module = function (&$m, $mode) {
+
+$rex_themesync_render_module = function (&$m, $mode) use($local_modules, $repo_modules) {
     $module_key = $m->getKey();
     $statusfarbe = '#f8a8e8;';
-    if ($mode === rex_themesync_sync::REX_THEMESYNC_REPO) {
+    if ($mode === rex_themesync_repo::REPO) {
+        #echo $module_key, isset($local_modules[$module_key]) ? ' ja' : ' nein', '<br/>';
         $is_installed = isset($local_modules[$module_key]);
         $in_repo = true;
     } else {
         $is_installed = true;
         $in_repo = isset($repo_modules[$module_key]);
     }
+    
+    $pd = new Parsedown();
+    $info = $m->getReadme();
+    $info = $info ? $pd->text($info) : '';
     ?>
-    <tr>
+<tr class="module_row" data-key="<?= $module_key ?>" data-name="<?= htmlentities($m->getName()) ?>" >
         <td>
     <?php if ($in_repo) : ?><i class="glyphicon glyphicon-ok"></i><?php endif; ?>
         </td>
@@ -67,16 +103,12 @@ $rex_themesync_render_module = function (&$m, $mode) {
             <div id="<?= $module_key ?>_info" class="collapse">
                 <p class="accordiontitle">Info</p>
                 <div style="padding: 10px; background: #f5f5f5; border: 1px solid #ccc;">
-                    info
+                    <?= $info ?>
                 </div>
             </div>
-            <div id="<?= $module_key ?>_code" class="collapse">
-    <?php /*
-      <p class="accordiontitle"><?= $this->i18n('input') ?></p>
-      TODO rex_string::highlight($modul['input'])
-      <p class="accordiontitle"><?= $this->i18n('output') ?></p>
-      TODO rex_string::highlight($modul['output']) */ ?>
-            </div>
+            
+            <div id="<?= $module_key ?>_code" class="collapse"></div>
+            
             <div id="<?= $module_key ?>_scss" class="collapse">
                 <div style="padding: 10px 0 10px 0;" >
     <?php /*
@@ -96,13 +128,19 @@ $rex_themesync_render_module = function (&$m, $mode) {
                 </div>
             </div>
         </td>
-    <?php /*
+        
       <td style="font-size: 2rem;">
-      <!--<i data-toggle="collapse" data-target="#<?= $module_key ?>_code" class="rex-icon rex-icon-module" style="<?= $statusfarbe ?>cursor:pointer;" title="todo: statusinfo"></i>-->
+        <i data-toggle="collapse" onclick="themesync_modul_details(this)" data-target="#<?= $module_key ?>_code" class="rex-icon rex-icon-module" style="<?= $statusfarbe ?>cursor:pointer;" title="todo: statusinfo"></i>
       </td>
+      
       <td style="font-size: 2rem;">
-      <i data-toggle="collapse" data-target="#<?= $module_key ?>_info" class="rex-icon rex-icon-info" style="cursor:pointer;"></i>
+        <?php if ($info) : ?>
+        <i data-toggle="collapse" data-target="#<?= $module_key ?>_info" class="rex-icon rex-icon-info" style="cursor:pointer;"></i>
+        <?php endif; ?>
       </td>
+      
+      <?php
+      /*
       <td>
       if ($moduls[$module_key]['styles_scss'] OR $moduls[$module_key]['styles_css']) {
       $modulausgabe[] = '<span class="btn btn-success" data-toggle="collapse" data-target="#'.$module_key.'_scss">'.$this->i18n('styles').'</span>'  ;
@@ -138,9 +176,101 @@ $rex_themesync_render_module = function (&$m, $mode) {
 
 
 
-
+ob_implicit_flush(false);
 ob_start();
 ?>
+<style>
+.Differences {
+    font-size:90%;
+	width: 100%;
+	border-collapse: collapse;
+	border-spacing: 0;
+	empty-cells: show;
+}
+
+.Differences thead th {
+	text-align: left;
+	border-bottom: 1px solid #000;
+	background: #aaa;
+	color: #000;
+	padding: 4px;
+}
+.Differences tbody th {
+	text-align: right;
+	background: #ccc;
+	width: 4em;
+	padding: 1px 2px;
+	border-right: 1px solid #000;
+	vertical-align: top;
+	font-size: 13px;
+}
+
+.Differences td {
+	padding: 1px 2px;
+	font-family: Consolas, monospace;
+	font-size: 13px;
+}
+
+.DifferencesSideBySide .ChangeInsert td.Left {
+	background: #dfd;
+}
+
+.DifferencesSideBySide .ChangeInsert td.Right {
+	background: #cfc;
+}
+
+.DifferencesSideBySide .ChangeDelete td.Left {
+	background: #f88;
+}
+
+.DifferencesSideBySide .ChangeDelete td.Right {
+	background: #faa;
+}
+
+.DifferencesSideBySide .ChangeReplace .Left {
+	background: #fe9;
+}
+
+.DifferencesSideBySide .ChangeReplace .Right {
+	background: #fd8;
+}
+
+.Differences ins, .Differences del {
+	text-decoration: none;
+}
+
+.DifferencesSideBySide .ChangeReplace ins, .DifferencesSideBySide .ChangeReplace del {
+	background: #fc0;
+}
+
+.Differences .Skipped {
+	background: #f7f7f7;
+}
+
+.DifferencesInline .ChangeReplace .Left,
+.DifferencesInline .ChangeDelete .Left {
+	background: #fdd;
+}
+
+.DifferencesInline .ChangeReplace .Right,
+.DifferencesInline .ChangeInsert .Right {
+	background: #dfd;
+}
+
+.DifferencesInline .ChangeReplace ins {
+	background: #9e9;
+}
+
+.DifferencesInline .ChangeReplace del {
+	background: #e99;
+}
+
+pre {
+	width: 100%;
+	overflow: auto;
+}
+</style>
+
 <div id="modulsammlung">
     <div class="row">
         <form action="<?= rex_url::currentBackendPage() ?>" method="POST">
@@ -150,6 +280,7 @@ ob_start();
                         <th>Repo</th>
                         <th>Lokal</th>
                         <th class="td_title"><?= $this->i18n('module') ?></th>
+                        <th></th>
                         <th>Install<br/><input type="checkbox" name=""/></th>
                         <th>Upload<br/><input disabled type="checkbox" name=""/></th>
                     </tr>
@@ -157,7 +288,7 @@ ob_start();
                 <tbody>
                     <?php
                     foreach ($repo_modules as &$m) {
-                        $rex_themesync_render_module->call($this, $m, rex_themesync_sync::REX_THEMESYNC_REPO);
+                        $rex_themesync_render_module->call($this, $m, rex_themesync_repo::REPO);
                     }
                     ?>
                     <?php
@@ -165,7 +296,7 @@ ob_start();
                         if (isset($repo_modules[$m->getKey()])) {
                             continue;
                         }
-                        $rex_themesync_render_module->call($this, $m, rex_themesync_sync::REX_THEMESYNC_LOCAL);
+                        $rex_themesync_render_module->call($this, $m, rex_themesync_repo::LOCAL);
                     }
                     ?>
                 </tbody>
@@ -179,6 +310,21 @@ ob_start();
 
     </div>
 </div>
+    
+<script>
+    function themesync_modul_details(el) {
+        var $mrow = $(el).closest('.module_row');
+        var name = $mrow.data('name');
+        var key = $mrow.data('key');
+        var $code = $mrow.find('#'+key+'_code');
+        
+        //console.log(name);
+        if ($code.text()==='') {
+            //console.log(name+' go');
+            $code.text('lade...').load("index.php", "page=themesync/sync&rex-api-call=module_info&name="+name);
+        }
+    }
+</script>
 
 <?php
 $content = ob_get_contents();

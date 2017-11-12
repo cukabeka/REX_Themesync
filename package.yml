@@ -15,9 +15,6 @@ page:
     subpages:
         sync:
             title: 'Sync'
-            subpages:
-                fromrepo: { title: 'translate:fromrepo'}
-                torepo: { title: 'translate:torepo'}
         info:
             title: 'Info'
             itemclass: 'pull-right'

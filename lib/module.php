@@ -3,13 +3,18 @@
 
 class rex_themesync_module {
     private $name, $key;
-    private $sync = null;
+    /* @var $repo rex_themesync_repo */
+    private $repo = null;
+    
+    private $inputOutputLoaded = false;
     private $input = null;
     private $output = null;
     
-    public function __construct($name, &$sync) {
+    private $repoCache = [];
+    
+    public function __construct($name, &$repo) {
         $this->name = $name;
-        $this->sync = $sync;
+        $this->repo = $repo;
         
         $this->key = preg_replace('`[^a-z0-9\\.]+`', '_', strtolower($this->name));
         //$this->key = preg_replace('`[^A-Za-z0-9\\-]`', '_', $this->key);
@@ -18,6 +23,22 @@ class rex_themesync_module {
         $this->key = preg_replace('`_\\.`', '_', $this->key);
         $this->key = preg_replace('`\\._`', '_', $this->key);
         $this->key = preg_replace('`_$`', '', $this->key);
+    }
+    
+    public function setRepoCache($k, &$v) {
+        $this->repoCache[$k] = $v;
+    }
+    
+    public function &getRepoCache($k) {
+        static $null = null;
+        if (!isset($this->repoCache[$k])) {
+            return $null;
+        }
+        return $this->repoCache[$k];
+    }
+    
+    public function &hasRepoCache($k) {
+        return isset($this->repoCache[$k]);
     }
     
     public function getName() {
@@ -37,54 +58,47 @@ class rex_themesync_module {
     }
     
     public function getOutput() {
+        $this->loadInputOutput();
         return $this->output;
     }
     
     public function getInput() {
+        $this->loadInputOutput();
         return $this->input;
     }
     
-    public function load() {
-        return $this->sync->loadModule($this);
-    }
-           
-    
-    public function install() {
-        if (!$this->load()) {
-            return false;
+    public function loadInputOutput() {
+        if ($this->inputOutputLoaded) {
+            return;
         }
-        
-        // TODO existiert??
-        
-        $input = $this->getInput();
-        $output = $this->getOutput();
-        
-        /*
-        name	varchar(255)	 
-        output	mediumtext	 
-        input	mediumtext	 
-        createuser	varchar(255)	 
-        updateuser	varchar(255)	 
-        createdate	datetime	 
-        updatedate	datetime	 
-        attributes	text NULL	 
-        revision	int(10) unsigned
-        */
-
-        $mi = rex_sql::factory();
-        
-        $mi->debugsql = 0;
-        $mi->setTable(rex::getTable('module'));
-        $mi->setValue('input', $input);
-        $mi->setValue('output', $output);
-        $mi->setValue('name', $this->getName());
-        
-        $mi->insert();
-        
-        $modul_id = (int) $mi->getLastId();
-         
-        return true;
+        $this->inputOutputLoaded = true;
+        return $this->repo->loadInputOutput($this);
     }
+    
+    public function isExisting() {
+        return $this->repo->isExisting($this);
+    }
+          
+    
+    public function getFile($path) {
+        if (method_exists($this->repo, 'getFileContents')) {
+            return $this->repo->getFileContents($this->name . '/' . $path);
+        }
+        return null;
+    }
+    
+    public function saveFile($path, $destination) {
+        if (method_exists($this->repo, 'downloadFile')) {
+            return $this->repo->downloadFile($this->name . '/' . $path, $destination);
+        }
+        return false;
+    }
+    
+    public function getReadme() {
+        return $this->getFile('README.md');
+    }
+    
+    
 }
 
 
