@@ -105,14 +105,14 @@ class rex_themesync_module {
     
     public function getFile($path) {
         if (method_exists($this->repo, 'getFileContents')) {
-            return $this->repo->getFileContents($this->name . '/' . $path);
+            return $this->repo->getFileContents('module', $this->name . '/' . $path);
         }
         return null;
     }
     
     public function saveFile($path, $destination) {
         if (method_exists($this->repo, 'downloadFile')) {
-            return $this->repo->downloadFile($this->name . '/' . $path, $destination);
+            return $this->repo->downloadFile('module', $this->name . '/' . $path, $destination);
         }
         return false;
     }

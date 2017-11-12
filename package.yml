@@ -13,8 +13,10 @@ page:
     icon: rex-icon fa-plus-square
     pjax: false
     subpages:
-        sync:
-            title: 'Sync'
+        modules:
+            title: 'Module'
+        templates:
+            title: 'Templates'
         config:
             title: 'Config'
         info:

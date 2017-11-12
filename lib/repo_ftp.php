@@ -28,8 +28,8 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
     }
     
     
-    protected function _listModules() {
-        if (!$this->ftpClient->chdir($this->dir . 'modules/')) {
+    protected function _list($type) {
+        if (!$this->ftpClient->chdir($this->dir . $type. 's/')) {
             return;
         }
         
@@ -40,17 +40,21 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
         /* @var $file rex_themesync_ftp_file */
         foreach ($dirList as $file) {
             $name = $file->getFilename();
-            $this->createModule($name);
+            if ($type === 'module') {
+                $this->createModule($name);
+            } else if ($type === 'template') {
+                $this->createTemplate($name);
+            }
         }
     }
 
 
-    public function downloadFile($path, $destination) {
+    public function downloadFile($type, $path, $destination) {
         throw new Exception();
     }
 
-    public function getFileContents($path) {
-        $fn = $this->dir . 'modules/' . $path;
+    public function getFileContents($type, $path) {
+        $fn = $this->dir . $type . 's/' . $path;
         
         ob_implicit_flush(false);
         ob_start();
@@ -64,8 +68,11 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
         return true;
     }
 
-    protected function _isExisting(\rex_themesync_module &$module) {
-        return $this->ftpClient->chdir($this->dir . 'modules/'.$module->getName());
+    protected function _isExisting(&$item) {
+        $type = get_class($item);
+        if ($type == 'rex_themesync_module') $type = 'module';
+        if ($type == 'rex_themesync_template') $type = 'template';
+        return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
     }
 
     protected function _loadInputOutput(\rex_themesync_module &$module) {

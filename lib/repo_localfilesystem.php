@@ -17,27 +17,34 @@ class rex_themesync_repo_localfilesystem extends rex_themesync_repo {
     }
 
     
-    protected function _listModules() {
-        $dirList = glob($this->repoDir.'*', GLOB_NOSORT|GLOB_ONLYDIR|GLOB_MARK);
+    protected function _list($type) {
+        $dirList = glob($this->repoDir.$type.'s/*', GLOB_NOSORT|GLOB_ONLYDIR|GLOB_MARK);
         if (!is_array($dirList)) {
             return;
         }
         foreach ($dirList as $path) {
             $name = basename($path);
-            $this->createModule($name);
+            if ($type === 'module') {
+                $this->createModule($name);
+            } else if ($type === 'template') {
+                $this->createTemplate($name);
+            }
         }
     }
 
-    public function downloadFile($path, $destination) {
-        return copy($this->repoDir . $path, $destination);
+    public function downloadFile($type, $path, $destination) {
+        return copy($this->repoDir .$type.'s/'. $path, $destination);
     }
 
-    public function getFileContents($path) {
-        return file_get_contents($this->repoDir . $path);
+    public function getFileContents($type, $path) {
+        return file_get_contents($this->repoDir.$type.'s/' . $path);
     }
 
-    protected function _isExisting(\rex_themesync_module &$module) {
-        return is_dir($this->repoDir . $module->getName());
+    protected function _isExisting(&$item) {
+        $type = get_class($item);
+        if ($type == 'rex_themesync_module') $type = 'module';
+        if ($type == 'rex_themesync_template') $type = 'template';
+        return is_dir($this->repoDir.'/'.$type.'s/' . $item->getName());
     }
 
     protected function _loadInputOutput(\rex_themesync_module &$module) {

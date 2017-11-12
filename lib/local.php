@@ -2,43 +2,53 @@
 
 
 class rex_themesync_local extends rex_themesync_repo {
-    private $table, $nameColumn;
+    
     
     public function __construct($repoConfig = []) {
         parent::__construct(self::LOCAL, $repoConfig);
         
-        $this->table = rex::getTable('module');
-        $this->nameColumn = 'name';
+        #$this->table = rex::getTable('module');
+        #$this->nameColumn = 'name';
     }
 
     
-    protected function _listModules() {
+    protected function _list($type) {
+        $table = rex::getTable($type);
+        
         try {
             $sql = rex_sql::factory();
-            $sql->setQuery('SELECT * FROM `' . $this->table . '`');
+            $sql->setQuery('SELECT * FROM `' . $table . '`');
             for ($i = 0, $rows = $sql->getRows(); $i < $rows; ++$i, $sql->next()) {
-                $name = $sql->getValue($this->nameColumn);
-                $this->createModule($name);
+                $name = $sql->getValue('name');
+                if ($type === 'module') {
+                    $this->createModule($name);
+                } else if ($type === 'template') {
+                    $this->createTemplate($name);
+                }
             }
         } finally {
         }
     }
 
-    protected function &_getDBObject(\rex_themesync_module$module) {
-        if (!$module->hasRepoCache('local_sql')) {
+    protected function &_getDBObject(&$item) {
+        if (!$item->hasRepoCache('local_sql')) {
+            $type = get_class($item);
+            if ($type == 'rex_themesync_module') $type = 'module';
+            if ($type == 'rex_themesync_template') $type = 'template';
+            $table = rex::getTable($type);
             try {
                 $sql = rex_sql::factory();
-                $sql->setQuery('SELECT * FROM `' . $this->table . '` WHERE name=?', [$module->getName()]);
+                $sql->setQuery('SELECT * FROM `' . $table . '` WHERE name=?', [$item->getName()]);
                 $sql->getRow();
             } finally {
                 //$sql->
                 #echo 'null';
                 #$sql = null;
             }
-            $module->setRepoCache('local_sql', $sql);
+            $item->setRepoCache('local_sql', $sql);
             return $sql;
         }
-        return $module->getRepoCache('local_sql');
+        return $item->getRepoCache('local_sql');
     }
     
     protected function _loadInputOutput(\rex_themesync_module &$module) {
@@ -50,11 +60,11 @@ class rex_themesync_local extends rex_themesync_repo {
         $module->setOutput($sql->getValue('output'));
     }
     
+    public function installTemplate(rex_themesync_template &$template, bool $update = false) {
+        return false;
+    }
 
-    public function install(rex_themesync_module &$module, bool $update = false) {
-        
-        
-        
+    public function installModule(rex_themesync_module &$module, bool $update = false) {
         
         $existing = $this->_getDBObject($module);
         if (!$existing || $existing->getRows()===0) $existing = null;
@@ -103,8 +113,8 @@ class rex_themesync_local extends rex_themesync_repo {
         return true;
     }
 
-    protected function _isExisting(\rex_themesync_module &$module) {
-        $sql = $this->_getDBObject($module);
+    protected function _isExisting(&$item) {
+        $sql = $this->_getDBObject($item);
         if (!$sql) {
             return false;
         }

@@ -1,13 +1,13 @@
 <?php
 
 trait rex_themesync_has_files {
-    abstract public function downloadFile($path, $destination);
-    abstract public function getFileContents($path);
+    abstract public function downloadFile($type, $path, $destination);
+    abstract public function getFileContents($type, $path);
 }
 
 abstract class rex_themesync_repo {
     protected $repoConfig;
-    protected $modules = null;
+    protected $moduleCache = null, $templateCache = null;
     protected $type = null;
     
     const LOCAL = 1;
@@ -47,28 +47,60 @@ abstract class rex_themesync_repo {
         $this->repoConfig = $repoConfig;
     }
     
+    
+    
+    
+    
     protected function createModule($name) {
         $module = new rex_themesync_module($name, $this);
         $key = $module->getKey();
-        if (isset($this->modules[$key])) {
-            throw new \Exception('Name / Key Conflict with '.$name .' and '.$this->modules[$key]->getName());
+        if (isset($this->moduleCache[$key])) {
+            throw new \Exception('Name / Key Conflict with '.$name .' and '.$this->moduleCache[$key]->getName());
         }
-        $this->modules[$key] = $module;
+        $this->moduleCache[$key] = $module;
     }
     
     public function resetModules() {
-        $this->modules = null;
+        $this->moduleCache = null;
     }
     
     public function &listModules() {
-        if (is_null($this->modules)) {
-            $this->_listModules();
+        if (is_null($this->moduleCache)) {
+            $this->_list('module');
         }
-        return $this->modules;
+        return $this->moduleCache;
     }
     
-    public function isExisting(rex_themesync_module &$module) {
+    
+    protected function createTemplate($name) {
+        $template = new rex_themesync_template($name, $this);
+        $key = $template->getKey();
+        if (isset($this->templateCache[$key])) {
+            throw new \Exception('Name / Key Conflict with '.$name .' and '.$this->templateCache[$key]->getName());
+        }
+        $this->templateCache[$key] = $template;
+    }
+    
+    public function resetTemplates() {
+        $this->templateCache = null;
+    }
+    
+    public function &listTemplates() {
+        if (is_null($this->templateCache)) {
+            $this->_list('template');
+        }
+        return $this->templateCache;
+    }
+    
+    
+    
+    
+    public function isModuleExisting(rex_themesync_module &$module) {
         return $this->_isExisting($module);
+    }
+    
+    public function isTemplateExisting(rex_themesync_template &$template) {
+        return $this->_isExisting($template);
     }
     
     /**
@@ -84,6 +116,8 @@ abstract class rex_themesync_repo {
     #abstract public function getInput(rex_themesync_module &$module);
     #abstract public function getOutput(rex_themesync_module &$module);
     
-    abstract protected function _isExisting(rex_themesync_module &$module);
+    abstract protected function _isExisting(&$item);
+    
+    abstract protected function _list($type);
     
 }
