@@ -29,13 +29,12 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
     
     
     protected function _listModules() {
-        if (!$this->ftpClient->chdir('modules')) {
+        if (!$this->ftpClient->chdir($this->dir . 'modules/')) {
             return;
         }
         
         $dirList = $this->ftpClient->listing();
         if (!is_array($dirList)) {
-            $this->ftpClient->chdir('..');
             return;
         }
         /* @var $file rex_themesync_ftp_file */
@@ -43,7 +42,6 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
             $name = $file->getFilename();
             $this->createModule($name);
         }
-        $this->ftpClient->chdir('..');
     }
 
 

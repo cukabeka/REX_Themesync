@@ -1,48 +1,16 @@
 <?php
 
-
-print_r($this->getProperty('repo'));
-
 /* @var $repo rex_themesync_repo */
 /* @var $local rex_themesync_local */
-$repo = rex_themesync_repo::get_repo();
+$repo  = rex_themesync_repo::get_repo();
 $local = rex_themesync_repo::get_local();
 
 
-/*
-$module = new rex_themesync_module('Code', $repo);
-if ($local->isExisting($module)) {
-    echo 'ja ';
-    #$local->install($module);
-} else {
-    echo 'no ';
-    #$local->install($module);
-}
 
-if ($repo->isExisting($module)) {
-    echo 'ja ';
-    $module->loadInputOutput();
-    #echo htmlentities($module->getInput());
-    $local->install($module);
-} else {
-    echo 'no ';
-    #$local->install($module);
-}
-
-die();
-*/
-
-$repo_modules = $repo->listModules();
+$repo_modules  = $repo->listModules();
 $local_modules = $local->listModules();
 
-#next($local_modules);
-#$mod = current($local_modules);
-#print '<pre>';
-#print_r($mod->getInput());
-#print '</pre>';
-#die();
-
-
+/*
 if (rex_post('sync')) {
     $install = rex_post('install', 'array', []);
     $upload = rex_post('upload', 'array', []);
@@ -67,7 +35,7 @@ if (rex_post('sync')) {
     $local->resetModules();
     $local_modules = $local->listModules();
 }
-
+*/
 
 
 
@@ -111,49 +79,20 @@ $rex_themesync_render_module = function (&$m, $mode) use($local_modules, $repo_m
             
             <div id="<?= $module_key ?>_scss" class="collapse">
                 <div style="padding: 10px 0 10px 0;" >
-    <?php /*
-
-      if($modul['styles_scss']) {
-      $modulausgabe[] = '
-      <p class="accordiontitle">'.$this->i18n('scss').'</p>
-      '.rex_string::highlight($modul['styles_scss']);
-      }
-      if($modul['styles_css']) {
-      $modulausgabe[] = '
-      <p class="accordiontitle">'.$this->i18n('css').'</p>
-      '.rex_string::highlight($modul['styles_css']);
-      }
-      $modulausgabe[] = ' */
-    ?>
                 </div>
             </div>
         </td>
         
       <td style="font-size: 2rem;">
-        <i data-toggle="collapse" onclick="themesync_modul_details(this)" data-target="#<?= $module_key ?>_code" class="rex-icon rex-icon-module" style="<?= $statusfarbe ?>cursor:pointer;" title="todo: statusinfo"></i>
+        <!--<i data-toggle="collapse" onclick="themesync_modul_details(this)" data-target="#<?= $module_key ?>_code" class="rex-icon rex-icon-module" style="<?= $statusfarbe ?>cursor:pointer;" title="todo: statusinfo"></i>-->
       </td>
       
       <td style="font-size: 2rem;">
         <?php if ($info) : ?>
-        <i data-toggle="collapse" data-target="#<?= $module_key ?>_info" class="rex-icon rex-icon-info" style="cursor:pointer;"></i>
+        <!--<i data-toggle="collapse" data-target="#<?= $module_key ?>_info" class="rex-icon rex-icon-info" style="cursor:pointer;"></i>-->
         <?php endif; ?>
       </td>
       
-      <?php
-      /*
-      <td>
-      if ($moduls[$module_key]['styles_scss'] OR $moduls[$module_key]['styles_css']) {
-      $modulausgabe[] = '<span class="btn btn-success" data-toggle="collapse" data-target="#'.$module_key.'_scss">'.$this->i18n('styles').'</span>'  ;
-      }
-      </td>
-      <td>
-      if ($modul['config']['status'] != 0) {
-      $modulausgabe[] = '<input type="submit" class="btn btn-primary" class="rex-button" value="'.$this->i18n('modul_installieren').'" />';
-      }
-
-
-      </td> */
-    ?>
         <td>
         <?php if ($in_repo) : ?>
                 <input type="checkbox" id="<?= $module_key ?>_install_check" class="" name="install[]" value="<?= $module_key ?>" />
@@ -179,7 +118,8 @@ $rex_themesync_render_module = function (&$m, $mode) use($local_modules, $repo_m
 ob_implicit_flush(false);
 ob_start();
 ?>
-<style>
+    <!-- TODO: besserer weg um css zu integrieren-->
+<!--<style>
 .Differences {
     font-size:90%;
 	width: 100%;
@@ -269,7 +209,7 @@ pre {
 	width: 100%;
 	overflow: auto;
 }
-</style>
+</style>-->
 
 <div id="modulsammlung">
     <div class="row">
@@ -281,8 +221,9 @@ pre {
                         <th>Lokal</th>
                         <th class="td_title"><?= $this->i18n('module') ?></th>
                         <th></th>
-                        <th>Install<br/><input type="checkbox" name=""/></th>
-                        <th>Upload<br/><input disabled type="checkbox" name=""/></th>
+                        <th></th>
+                        <th>Install<br/><!--<input type="checkbox" name=""/>--></th>
+                        <th>Upload<br/><!--<input disabled type="checkbox" name=""/>--></th>
                     </tr>
                 </thead>
                 <tbody>

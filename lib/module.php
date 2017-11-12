@@ -10,7 +10,6 @@ class rex_themesync_module {
     private $input = null;
     private $output = null;
     
-    private $repoCache = [];
     
     public function __construct($name, &$repo) {
         $this->name = $name;
@@ -24,6 +23,16 @@ class rex_themesync_module {
         $this->key = preg_replace('`\\._`', '_', $this->key);
         $this->key = preg_replace('`_$`', '', $this->key);
     }
+    
+    
+    
+    /**
+     * Der Repo Cache kann dafür genutzt werden, dass das Repo repospezifische
+     * Daten zum Modul ablegen kann.
+     * @var array
+     */
+    
+    private $repoCache = [];
     
     public function setRepoCache($k, &$v) {
         $this->repoCache[$k] = $v;
@@ -41,6 +50,11 @@ class rex_themesync_module {
         return isset($this->repoCache[$k]);
     }
     
+    
+    
+    
+    
+    
     public function getName() {
         return $this->name;
     }
@@ -49,6 +63,13 @@ class rex_themesync_module {
         return $this->key;
     }
     
+    
+    
+    /**
+     * input/output muss erst geladen werden.
+     * das passier idR über  loadInputOutput()
+     * @param type $output
+     */
     public function setOutput($output) {
         $this->output = $output;
     }
@@ -74,6 +95,8 @@ class rex_themesync_module {
         $this->inputOutputLoaded = true;
         return $this->repo->loadInputOutput($this);
     }
+    
+    
     
     public function isExisting() {
         return $this->repo->isExisting($this);

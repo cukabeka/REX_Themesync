@@ -50,21 +50,6 @@ class rex_themesync_local extends rex_themesync_repo {
         $module->setOutput($sql->getValue('output'));
     }
     
-    /*public function getInput(rex_themesync_module &$module) {
-        $this->_loadModule($module);
-        if (!$this->data) {
-            return null;
-        }
-        return ;
-    }
-    
-    public function getOutput(rex_themesync_module &$module) {
-        $this->_loadModule($module);
-        if (!$this->data) {
-            return null;
-        }
-        return $this->data->getValue('output');
-    }*/
 
     public function install(rex_themesync_module &$module, bool $update = false) {
         
@@ -121,7 +106,6 @@ class rex_themesync_local extends rex_themesync_repo {
     protected function _isExisting(\rex_themesync_module &$module) {
         $sql = $this->_getDBObject($module);
         if (!$sql) {
-            echo 'NULL';
             return false;
         }
         return $sql->getRows() > 0;

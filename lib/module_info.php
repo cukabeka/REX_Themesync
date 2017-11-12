@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Für AJAX Requests um Details über das Modul zu laden
+ * z.B. den Code oder ein Diff wenn die repo und die lokale version sich unterscheiden.
+ */
 class rex_api_module_info extends rex_api_function {
     function execute() {
         #$result = new \stdClass();
