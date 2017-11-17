@@ -1,7 +1,7 @@
 <?php
 
 
-class rex_themesync_local extends rex_themesync_repo {
+class rex_themesync_local extends rex_themesync_source {
     
     
     public function __construct($repoConfig = []) {
@@ -51,7 +51,7 @@ class rex_themesync_local extends rex_themesync_repo {
         return $item->getRepoCache('local_sql');
     }
     
-    protected function _loadInputOutput(\rex_themesync_module &$module) {
+    protected function _loadModuleInputOutput(\rex_themesync_module &$module) {
         $sql = $this->_getDBObject($module);
         if (!$sql || $sql->getRows() === 0) {
             return;
@@ -61,6 +61,7 @@ class rex_themesync_local extends rex_themesync_repo {
     }
     
     public function installTemplate(rex_themesync_template &$template, bool $update = false) {
+        // rex::getTable('template')
         return false;
     }
 
@@ -90,9 +91,9 @@ class rex_themesync_local extends rex_themesync_repo {
 
         $mi = rex_sql::factory();
         
-        $mi->setDebug(true);
+        //$mi->setDebug(true);
         
-        $mi->setTable($this->table);
+        $mi->setTable(rex::getTable('module'));
         
         if ($existing) {
             $mi->setWhere(['id' => $existing->getValue('id')]);
@@ -119,6 +120,10 @@ class rex_themesync_local extends rex_themesync_repo {
             return false;
         }
         return $sql->getRows() > 0;
+    }
+
+    public function getRepoInfo($short = false) {
+        return 'Lokale Datenbank';
     }
 
 }

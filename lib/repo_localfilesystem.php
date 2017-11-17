@@ -1,7 +1,7 @@
 <?php
 
 
-class rex_themesync_repo_localfilesystem extends rex_themesync_repo {
+class rex_themesync_repo_localfilesystem extends rex_themesync_source {
     use rex_themesync_has_files;
     
     private $repoDir;
@@ -54,5 +54,8 @@ class rex_themesync_repo_localfilesystem extends rex_themesync_repo {
         $module->setOutput($this->getFileContents($outfn));
     }
 
+    public function getRepoInfo($short = false) {
+        return 'Lokaler Ordner: <code>'.htmlentities($this->repoDir).'</code>';
+    }
 
 }

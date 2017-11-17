@@ -1,7 +1,7 @@
 <?php
 
 
-class rex_themesync_repo_ftp extends rex_themesync_repo {
+class rex_themesync_repo_ftp extends rex_themesync_source {
     use rex_themesync_has_files;
     
     private $host, $user, $pass;
@@ -18,13 +18,16 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
         $this->pass = $this->repoConfig['pass'];
         $this->dir  = $this->repoConfig['dir'];
         
+        if (empty($this->host)) {
+            throw new \Exception('Missing FTP-Server Config');
+        }
+        
         $this->ftpClient = new rex_themesync_ftp_client($this->host);
         $this->ftpClient->login($this->user, $this->pass);
         
         $this->ftpClient->chdir($this->dir);
         $this->ftpClient->pasv(true);
 
-                
     }
     
     
@@ -75,11 +78,15 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
         return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
     }
 
-    protected function _loadInputOutput(\rex_themesync_module &$module) {
+    protected function _loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
-        $module->setInput($this->getFileContents($infn));
-        $module->setOutput($this->getFileContents($outfn));
+        $module->setInput($this->getFileContents('module', $infn));
+        $module->setOutput($this->getFileContents('module', $outfn));
     }
 
+    public function getRepoInfo($short = false) {
+        return 'FTP: <code>'. htmlentities($this->user).' @ '.htmlentities($this->host) . ' '. htmlentities($this->dir).'</code>';
+    }
+    
 }

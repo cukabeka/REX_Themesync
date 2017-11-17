@@ -93,13 +93,13 @@ class rex_themesync_module {
             return;
         }
         $this->inputOutputLoaded = true;
-        return $this->repo->loadInputOutput($this);
+        return $this->repo->loadModuleInputOutput($this);
     }
     
     
     
     public function isExisting() {
-        return $this->repo->isExisting($this);
+        return $this->repo->isModuleExisting($this);
     }
           
     
