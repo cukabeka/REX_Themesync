@@ -51,7 +51,7 @@ class rex_themesync_local extends rex_themesync_source {
         return $item->getRepoCache('local_sql');
     }
     
-    protected function _loadModuleInputOutput(\rex_themesync_module &$module) {
+    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
         $sql = $this->_getDBObject($module);
         if (!$sql || $sql->getRows() === 0) {
             return;
@@ -60,8 +60,27 @@ class rex_themesync_local extends rex_themesync_source {
         $module->setOutput($sql->getValue('output'));
     }
     
+    protected function loadTemplateContent(\rex_themesync_template &$template) {
+        $sql = $this->_getDBObject($template);
+        if (!$sql || $sql->getRows() === 0) {
+            return;
+        }
+        $template->setContent($sql->getValue('content'));
+    }
+    
     public function installTemplate(rex_themesync_template &$template, bool $update = false) {
         // rex::getTable('template')
+        /*
+        name	varchar(255) NULL	 
+        content	mediumtext NULL	 
+        active	tinyint(1) NULL	 
+        createuser	varchar(255)	 
+        updateuser	varchar(255)	 
+        createdate	datetime	 
+        updatedate	datetime	 
+        attributes	text NULL	 
+        revision	int(11)
+         */
         return false;
     }
 

@@ -47,11 +47,16 @@ class rex_themesync_repo_localfilesystem extends rex_themesync_source {
         return is_dir($this->repoDir.'/'.$type.'s/' . $item->getName());
     }
 
-    protected function _loadInputOutput(\rex_themesync_module &$module) {
+    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
         $module->setInput($this->getFileContents($infn));
         $module->setOutput($this->getFileContents($outfn));
+    }
+    
+    protected function loadTemplateContent(\rex_themesync_template &$template) {
+        $fn = $template->getName().'/'.'template.php';
+        $template->setContent($this->getFileContents('template', $fn));
     }
 
     public function getRepoInfo($short = false) {

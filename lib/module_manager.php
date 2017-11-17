@@ -14,10 +14,10 @@ class rex_themesync_module_manager extends rex_themesync_manager {
             /* @var $local rex_themesync_local */
             $is_installed = $local->isModuleExisting($item);
             $in_repo = true;
-        } else {
+        }/* TODO else {
             $is_installed = true;
             $in_repo = isset($repo_modules[$module_key]);
-        }
+        }*/
 
         #$pd = new Parsedown();
         #$info = $item->getReadme();
@@ -85,7 +85,7 @@ class rex_themesync_module_manager extends rex_themesync_manager {
     public function action() {
         if (rex_post('sync')) {
             $install = rex_post('install', 'array', []);
-            $upload = rex_post('upload', 'array', []);
+            //$upload = rex_post('upload', 'array', []);
             
             /* @var $repo rex_themesync_source */
             $repo  = $this->getRepo();
@@ -106,11 +106,30 @@ class rex_themesync_module_manager extends rex_themesync_manager {
 
                 echo rex_view::success($this->addon->i18n('module_sucess').': '. htmlentities($module->getName()));
             }
-
-            // TODO: redirect!!
-            #$local->resetModules();
-            #$local_modules = $local->listModules();
+            $repo->resetModules();
         }
+    }
+    
+    
+    public function render() {
+        /* @var $repo rex_themesync_source */
+        $repo = $this->getRepo();
+        
+        $items = $repo->listModules();
+        
+        $html = '';
+        foreach ($items as &$item) {
+            $html .= $this->renderItem($item, rex_themesync_source::REPO);
+        }
+        // TODO lokale, die nicht im repo sind
+        /*
+        foreach ($local_modules as &$m) {
+            if (isset($repo_modules[$m->getKey()])) {
+                continue;
+            }
+            $rex_themesync_render_module->call($this, $m, rex_themesync_source::LOCAL);
+        }*/
+        return $html;
     }
 
 }

@@ -32,7 +32,8 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
     
     
     protected function _list($type) {
-        if (!$this->ftpClient->chdir($this->dir . $type. 's/')) {
+        $dir = $this->dir . $type. 's/';
+        if (!$this->ftpClient->chdir($dir)) {
             return;
         }
         
@@ -40,6 +41,7 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
         if (!is_array($dirList)) {
             return;
         }
+        
         /* @var $file rex_themesync_ftp_file */
         foreach ($dirList as $file) {
             $name = $file->getFilename();
@@ -78,11 +80,16 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
         return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
     }
 
-    protected function _loadModuleInputOutput(\rex_themesync_module &$module) {
+    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
         $module->setInput($this->getFileContents('module', $infn));
         $module->setOutput($this->getFileContents('module', $outfn));
+    }
+    
+    protected function loadTemplateContent(\rex_themesync_template &$template) {
+        $fn = $template->getName().'/'.'template.php';
+        $template->setContent($this->getFileContents('template', $fn));
     }
 
     public function getRepoInfo($short = false) {

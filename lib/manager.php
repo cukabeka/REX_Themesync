@@ -63,41 +63,10 @@ abstract class rex_themesync_manager {
         }
     }
     
-    public function render() {
-        /* @var $repo rex_themesync_repo */
-        $repo = $this->getRepo();
-        
-        // TODO: diese unterscheidung evtl in subclass auslagern
-        switch ($this->type) {
-            case 'module':
-                $items = $repo->listModules();
-                break;
-            case 'template':
-                $items = $repo->listTemplates();
-                break;
-            default:
-                $items = [];
-            
-        }
-        
-        $html = '';
-        foreach ($items as &$item) {
-            $html .= $this->renderItem($item, rex_themesync_source::REPO);
-        }
-        // TODO lokale, die nicht im repo sind
-        /*
-        foreach ($local_modules as &$m) {
-            if (isset($repo_modules[$m->getKey()])) {
-                continue;
-            }
-            $rex_themesync_render_module->call($this, $m, rex_themesync_source::LOCAL);
-        }*/
-        return $html;
-    }
     
     abstract public function action();
     
-    abstract public function renderItem(&$item, $mode);
+    abstract public function render();
     
     
     

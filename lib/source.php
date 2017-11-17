@@ -80,11 +80,8 @@ abstract class rex_themesync_source {
      * input und output wird im modul gesetzt
      * @param rex_themesync_module $module
      */
-    public function loadModuleInputOutput(rex_themesync_module &$module) {
-        return $this->_loadModuleInputOutput($module);
-    }
-    
-    abstract protected function _loadModuleInputOutput(rex_themesync_module &$module);
+    abstract protected function loadModuleInputOutput(rex_themesync_module &$module);
+    abstract protected function loadTemplateContent(rex_themesync_template &$template);
     
     abstract protected function _isExisting(&$item);
     
