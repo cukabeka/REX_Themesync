@@ -1,6 +1,11 @@
 <?php
 
-
+/**
+ * Basis-Klasse für Modul-Item / Template-Item
+ * 
+ * Wird über Name identifiziert; der $key ist im wesentlichen für 
+ * technische zwecke, wie ids im HTML etc.
+ */
 abstract class rex_themesync_item_base {
     private $name, $key;
     /* @var $repo rex_themesync_repo */
@@ -65,8 +70,14 @@ abstract class rex_themesync_item_base {
     
     abstract public function isExisting();
     
+    /**
+     * Dateiinhalt zurückgeben
+     */
     abstract public function getFile($path);
     
+    /**
+     * Dateiinhalt herunterladen
+     */
     abstract public function saveFile($path, $destination);
     
     

@@ -1,6 +1,10 @@
 <?php
 
 
+/**
+ * Repräsentiert ein Template über seinen Namen.
+ * Alle anderen Dinge werden an das Repo delegiert.
+ */
 class rex_themesync_template extends rex_themesync_item_base {
     private $contentLoaded = false;
     private $content = null;
@@ -30,6 +34,9 @@ class rex_themesync_template extends rex_themesync_item_base {
     }
           
     
+    /**
+     * Dateiinhalt zurückgeben
+     */
     public function getFile($path) {
         if (method_exists($this->repo, 'getFileContents')) {
             return $this->repo->getFileContents('module', $this->name . '/' . $path);
@@ -37,6 +44,9 @@ class rex_themesync_template extends rex_themesync_item_base {
         return null;
     }
     
+    /**
+     * Dateiinhalt herunterladen
+     */
     public function saveFile($path, $destination) {
         if (method_exists($this->repo, 'downloadFile')) {
             return $this->repo->downloadFile('module', $this->name . '/' . $path, $destination);

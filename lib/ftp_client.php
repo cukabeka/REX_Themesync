@@ -1,7 +1,12 @@
 <?php
+/**
+ * Simpler Wrapper für die PHP ftp_* functionen
+ */
 
 // http://php.net/manual/de/book.ftp.php
-
+/**
+ * Repräsentiert eine FTP-Datei
+ */
 class rex_themesync_ftp_file {
     private $dir;
     private $name;
@@ -40,6 +45,9 @@ class rex_themesync_ftp_file {
     
 }
 
+/**
+ * Der FTP-Client.
+ */
 class rex_themesync_ftp_client { 
     private $connection;
     
@@ -95,29 +103,6 @@ class rex_themesync_ftp_client {
             $size = intval($item['size']);
             $list[] = new rex_themesync_ftp_file($dir, $name, $is_dir, $size);
             
-            
-            
-            
-        /*
-            
-            if (preg_match($pattern, $r, $m)) {
-                $name = $m[3];
-                if ($name === '.' || $name === '..') {
-                    continue;
-                }
-                $is_dir = $m[1]==='d';
-                
-                if ($is_dir && !($flags & DIRS)) {
-                    continue;
-                }
-                if (!$is_dir && !($flags & FILES)) {
-                    continue;
-                }
-                
-                $size = intval($m[2]);
-                $list[] = new rex_themesync_ftp_file($dir, $name, $is_dir, $size);
-            }
-         */
         }
         return $list;
     }

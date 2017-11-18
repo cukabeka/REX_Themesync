@@ -1,6 +1,9 @@
 <?php
 
-
+/**
+ * Repräsentiert ein Modul über seinen Namen.
+ * Alle anderen Dinge werden an das Repo delegiert.
+ */
 class rex_themesync_module extends rex_themesync_item_base {
     private $inputOutputLoaded = false;
     private $input = null;
@@ -51,6 +54,9 @@ class rex_themesync_module extends rex_themesync_item_base {
         return null;
     }
     
+    /**
+     * Dateiinhalt herunterladen
+     */
     public function saveFile($path, $destination) {
         if (method_exists($this->repo, 'downloadFile')) {
             return $this->repo->downloadFile('module', $this->name . '/' . $path, $destination);

@@ -5,6 +5,9 @@ trait rex_themesync_has_files {
     abstract public function getFileContents($type, $path);
 }
 
+/**
+ * Basisklasse für alle Modul-/Template-Quellen; sowohl entfernt als auch lokal.
+ */
 abstract class rex_themesync_source {
     protected $repoConfig;
     protected $moduleCache = null, $templateCache = null;
@@ -14,14 +17,15 @@ abstract class rex_themesync_source {
     const REPO = 2;
     
     
-    
+    /**
+     * 
+     * @param string $type 'module' oder 'template'
+     * @param type $repoConfig
+     */
     public function __construct($type, $repoConfig = []) {
         $this->type = $type;
         $this->repoConfig = $repoConfig;
     }
-    
-    
-    
     
     
     protected function createModule($name) {
@@ -77,11 +81,11 @@ abstract class rex_themesync_source {
     }
     
     /**
-     * input und output wird im modul gesetzt
-     * @param rex_themesync_module $module
+     * Von diesen Methoden werden die entsprechenen Daten geladen und im
+     * Template / Modul abgelegt.
      */
-    abstract protected function loadModuleInputOutput(rex_themesync_module &$module);
-    abstract protected function loadTemplateContent(rex_themesync_template &$template);
+    abstract public function loadModuleInputOutput(rex_themesync_module &$module);
+    abstract public function loadTemplateContent(rex_themesync_template &$template);
     
     abstract protected function _isExisting(&$item);
     

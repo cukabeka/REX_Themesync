@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * FTP-Server als Repository
+ */
 class rex_themesync_repo_ftp extends rex_themesync_source {
     use rex_themesync_has_files;
     
@@ -22,6 +24,7 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
             throw new \Exception('Missing FTP-Server Config');
         }
         
+        // todo: port / anonymous user...
         $this->ftpClient = new rex_themesync_ftp_client($this->host);
         $this->ftpClient->login($this->user, $this->pass);
         
@@ -43,11 +46,14 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
         }
         
         /* @var $file rex_themesync_ftp_file */
-        foreach ($dirList as $file) {
-            $name = $file->getFilename();
-            if ($type === 'module') {
+        if ($type === 'module') {
+            foreach ($dirList as $file) {
+                $name = $file->getFilename();
                 $this->createModule($name);
-            } else if ($type === 'template') {
+            }
+        } else if ($type === 'template') {
+            foreach ($dirList as $file) {
+                $name = $file->getFilename();
                 $this->createTemplate($name);
             }
         }
@@ -55,7 +61,7 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
 
 
     public function downloadFile($type, $path, $destination) {
-        throw new Exception();
+        throw new Exception('ftp repo downloadFile nyi');
     }
 
     public function getFileContents($type, $path) {
@@ -80,14 +86,14 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
         return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
     }
 
-    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
+    public function loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
         $module->setInput($this->getFileContents('module', $infn));
         $module->setOutput($this->getFileContents('module', $outfn));
     }
     
-    protected function loadTemplateContent(\rex_themesync_template &$template) {
+    public function loadTemplateContent(\rex_themesync_template &$template) {
         $fn = $template->getName().'/'.'template.php';
         $template->setContent($this->getFileContents('template', $fn));
     }

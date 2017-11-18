@@ -1,6 +1,8 @@
 <?php
 
-
+/**
+ * Lokale Datenbank als "Quelle" bzw "Ziel" für Module / Templates
+ */
 class rex_themesync_local extends rex_themesync_source {
     
     
@@ -30,6 +32,12 @@ class rex_themesync_local extends rex_themesync_source {
         }
     }
 
+    /**
+     * Den entsprechenden Datensatz laden.
+     * 
+     * @param type $item
+     * @return type
+     */
     protected function &_getDBObject(&$item) {
         if (!$item->hasRepoCache('local_sql')) {
             $type = get_class($item);
@@ -51,7 +59,7 @@ class rex_themesync_local extends rex_themesync_source {
         return $item->getRepoCache('local_sql');
     }
     
-    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
+    public function loadModuleInputOutput(\rex_themesync_module &$module) {
         $sql = $this->_getDBObject($module);
         if (!$sql || $sql->getRows() === 0) {
             return;
@@ -60,7 +68,7 @@ class rex_themesync_local extends rex_themesync_source {
         $module->setOutput($sql->getValue('output'));
     }
     
-    protected function loadTemplateContent(\rex_themesync_template &$template) {
+    public function loadTemplateContent(\rex_themesync_template &$template) {
         $sql = $this->_getDBObject($template);
         if (!$sql || $sql->getRows() === 0) {
             return;
@@ -68,8 +76,18 @@ class rex_themesync_local extends rex_themesync_source {
         $template->setContent($sql->getValue('content'));
     }
     
+    
+    
     public function installTemplate(rex_themesync_template &$template, bool $update = false) {
-        // rex::getTable('template')
+        $existing = $this->_getDBObject($template);
+        if (!$existing || $existing->getRows()===0) $existing = null;
+        
+        if ($existing && !$update) {
+            return false;
+        }
+        
+        $content = $template->getContent();
+        
         /*
         name	varchar(255) NULL	 
         content	mediumtext NULL	 
@@ -81,9 +99,33 @@ class rex_themesync_local extends rex_themesync_source {
         attributes	text NULL	 
         revision	int(11)
          */
-        return false;
+        
+        
+        $mi = rex_sql::factory();
+        
+        //$mi->setDebug(true);
+        
+        $mi->setTable(rex::getTable('template'));
+        
+        if ($existing) {
+            $mi->setWhere(['id' => $existing->getValue('id')]);
+        }
+        
+        $mi->setValue('content', $content);
+        $mi->setValue('name', $template->getName());
+        
+        if ($existing) {
+            $mi->update();
+        } else {
+            $mi->insert();
+            $template_id = (int) $mi->getLastId();
+        }
+        
+        return true;
     }
 
+    
+    
     public function installModule(rex_themesync_module &$module, bool $update = false) {
         
         $existing = $this->_getDBObject($module);

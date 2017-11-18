@@ -1,6 +1,9 @@
 <?php
 
-
+/**
+ * Ein lokaler Ordner (unterhalb des data-Ordners des Addons)
+ * als Repository
+ */
 class rex_themesync_repo_localfilesystem extends rex_themesync_source {
     use rex_themesync_has_files;
     
@@ -47,14 +50,14 @@ class rex_themesync_repo_localfilesystem extends rex_themesync_source {
         return is_dir($this->repoDir.'/'.$type.'s/' . $item->getName());
     }
 
-    protected function loadModuleInputOutput(\rex_themesync_module &$module) {
+    public function loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
         $module->setInput($this->getFileContents($infn));
         $module->setOutput($this->getFileContents($outfn));
     }
     
-    protected function loadTemplateContent(\rex_themesync_template &$template) {
+    public function loadTemplateContent(\rex_themesync_template &$template) {
         $fn = $template->getName().'/'.'template.php';
         $template->setContent($this->getFileContents('template', $fn));
     }
