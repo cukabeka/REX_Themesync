@@ -77,8 +77,13 @@ class rex_themesync_local extends rex_themesync_source {
     }
     
     
-    
-    public function installTemplate(rex_themesync_template &$template, bool $update = false) {
+    /**
+     * 
+     * @param rex_themesync_template $template
+     * @param bool $update
+     * @return boolean
+     */
+    public function installTemplate(rex_themesync_template &$template, $update = false) {
         $existing = $this->_getDBObject($template);
         if (!$existing || $existing->getRows()===0) $existing = null;
         
@@ -125,8 +130,13 @@ class rex_themesync_local extends rex_themesync_source {
     }
 
     
-    
-    public function installModule(rex_themesync_module &$module, bool $update = false) {
+    /**
+     * 
+     * @param rex_themesync_module $module
+     * @param bool $update
+     * @return boolean
+     */
+    public function installModule(rex_themesync_module &$module, $update = false) {
         
         $existing = $this->_getDBObject($module);
         if (!$existing || $existing->getRows()===0) $existing = null;

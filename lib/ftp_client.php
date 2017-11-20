@@ -54,7 +54,13 @@ class rex_themesync_ftp_client {
     const DIRS = 1;
     const FILES = 2;
 
-    public function __construct(string $host, int $port = 21, int $timeout = 90) { 
+    /**
+     * 
+     * @param string $host
+     * @param int $port
+     * @param int $timeout
+     */
+    public function __construct($host, $port = 21, $timeout = 90) { 
         //$this->connection = \ftp_connect($host, $port, $timeout); 
         $this->connection = \ftp_ssl_connect($host, $port, $timeout);
     } 
