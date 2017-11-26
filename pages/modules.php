@@ -22,7 +22,7 @@ ob_start();
                         <th></th>
                         <th></th>
                         <th>Install<br/><!--<input type="checkbox" name=""/>--></th>
-                        <!-- <th>Upload<br/><input disabled type="checkbox" name=""/></th>-->
+                        <th>Upload<br/><!--<input disabled type="checkbox" name=""/>--></th>
                     </tr>
                 </thead>
                 <tbody>

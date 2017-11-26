@@ -112,4 +112,29 @@ class rex_themesync_ftp_client {
         }
         return $list;
     }
+    
+    function get_contents($remote_file, $mode) {
+        ob_implicit_flush(false);
+        ob_start();
+        $result = $this->ftpClient->get("php://output", $remote_file, $mode);
+        $data = ob_get_contents();
+        ob_end_clean();
+        
+        if ($result) {
+            return $data;
+        }
+        return false;
+    }
+    
+    function put_contents($remote_file, $contents, $mode, $startpos = 0) {
+        $tmp = tmpfile();
+        fwrite($tmp, $contents);
+        rewind($tmp);
+        $result = $this->fput($remote_file, $tmp, $mode, $startpos);
+        fclose($tmp);
+        return $result;
+    }
+    
+    
+    
 } 

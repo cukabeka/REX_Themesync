@@ -20,6 +20,7 @@ ob_start();
                         <th>Lokal</th>
                         <th class="td_title"><?= $this->i18n('template') ?></th>
                         <th>Install<br/>
+                        <th>Upload</th>
                     </tr>
                 </thead>
                 <tbody>

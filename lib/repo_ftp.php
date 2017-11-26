@@ -3,8 +3,8 @@
 /**
  * FTP-Server als Repository
  */
-class rex_themesync_repo_ftp extends rex_themesync_source {
-    use rex_themesync_has_files;
+class rex_themesync_repo_ftp extends rex_themesync_repo {
+    #use rex_themesync_has_files;
     
     private $host, $user, $pass;
     private $dir;
@@ -60,33 +60,26 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
     }
 
 
-    public function downloadFile($type, $path, $destination) {
-        throw new Exception('ftp repo downloadFile nyi');
-    }
+    #public function downloadFile($type, $path, $destination) {
+    #    throw new Exception('ftp repo downloadFile nyi');
+    #}
 
     public function getFileContents($type, $path) {
         $fn = $this->dir . $type . 's/' . $path;
-        
-        ob_implicit_flush(false);
-        ob_start();
-        $result = $this->ftpClient->get("php://output", $fn, FTP_BINARY);
-        $data = ob_get_contents();
-        ob_end_clean();
-        
-        if ($result) {
-            return $data;
-        }
-        return true;
+        return $this->ftpClient->get_contents($fn, FTP_BINARY);
+    }
+    
+    public function putFileContents($type, $path, $content) {
+        $fn = $this->dir . $type . 's/' . $path;
+        return $this->ftpClient->put_contents($fn, $content, FTP_BINARY);
     }
 
     protected function _isExisting(&$item) {
-        $type = get_class($item);
-        if ($type == 'rex_themesync_module') $type = 'module';
-        if ($type == 'rex_themesync_template') $type = 'template';
+        $type = $item->getType();
         return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
     }
 
-    public function loadModuleInputOutput(\rex_themesync_module &$module) {
+    /*public function loadModuleInputOutput(\rex_themesync_module &$module) {
         $infn = $module->getName().'/'.'input.php';
         $outfn = $module->getName().'/'.'output.php';
         $module->setInput($this->getFileContents('module', $infn));
@@ -98,8 +91,73 @@ class rex_themesync_repo_ftp extends rex_themesync_source {
         $template->setContent($this->getFileContents('template', $fn));
     }
 
+    public function saveModuleInputOutput(\rex_themesync_module &$module) {
+        
+    }
+
+    public function saveTemplateContent(\rex_themesync_template &$template) {
+        
+    }*/
+    
     public function getRepoInfo($short = false) {
         return 'FTP: <code>'. htmlentities($this->user).' @ '.htmlentities($this->host) . ' '. htmlentities($this->dir).'</code>';
     }
+
+    /*
+    public function uploadModule(\rex_themesync_module &$module, $update = false) {
+        // Todo fehlerbehandlung
+        
+        $dir = $this->dir . 'modules/' . $module->getName();
+        
+        if (!$this->ftpClient->chdir($dir)) {
+            $this->ftpClient->mkdir($dir);
+            if (!$this->ftpClient->chdir($dir)) {
+                return false;
+            }
+        } else {
+            if (!$update) {
+                return false;
+            }
+        }
+        
+        $a = $this->saveModuleInputOutput($module);
+        
+        return !!$a;
+    }
+
+    public function uploadTemplate(\rex_themesync_template &$template, $update = false) {
+        // Todo fehlerbehandlung
+        
+        $dir = $this->dir . 'templates/' . $template->getName();
+        
+        if (!$this->ftpClient->chdir($dir)) {
+            $this->ftpClient->mkdir($dir);
+            if (!$this->ftpClient->chdir($dir)) {
+                return false;
+            }
+        } else {
+            if (!$update) {
+                return false;
+            }
+        }
+        
+        $a = $this->saveTemplateContent($template);
+        
+        return !!$a;
+    }*/
+
+    protected function makeItemDir(&$item) {
+        $dir = $this->dir . $item->getType() .'s/' . $item->getName();
+        
+        if (!$this->ftpClient->chdir($dir)) {
+            $this->ftpClient->mkdir($dir);
+            if (!$this->ftpClient->chdir($dir)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
+
+
 }

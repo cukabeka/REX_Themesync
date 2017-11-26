@@ -1,10 +1,5 @@
 <?php
 
-trait rex_themesync_has_files {
-    abstract public function downloadFile($type, $path, $destination);
-    abstract public function getFileContents($type, $path);
-}
-
 /**
  * Basisklasse für alle Modul-/Template-Quellen; sowohl entfernt als auch lokal.
  */
@@ -86,6 +81,8 @@ abstract class rex_themesync_source {
      */
     abstract public function loadModuleInputOutput(rex_themesync_module &$module);
     abstract public function loadTemplateContent(rex_themesync_template &$template);
+    
+    
     
     abstract protected function _isExisting(&$item);
     

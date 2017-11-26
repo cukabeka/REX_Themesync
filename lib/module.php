@@ -9,6 +9,10 @@ class rex_themesync_module extends rex_themesync_item_base {
     private $input = null;
     private $output = null;
     
+    public function __construct($name, &$repo) {
+        parent::__construct('module', $name, $repo);
+    }
+    
     /**
      * input/output muss erst geladen werden.
      * das passier idR über  loadInputOutput()

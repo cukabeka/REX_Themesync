@@ -9,6 +9,10 @@ class rex_themesync_template extends rex_themesync_item_base {
     private $contentLoaded = false;
     private $content = null;
     
+    public function __construct($name, &$repo) {
+        parent::__construct('template', $name, $repo);
+    }
+    
     
     public function setContent($c) {
         $this->content = $c;

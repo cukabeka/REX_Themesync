@@ -11,9 +11,12 @@ abstract class rex_themesync_item_base {
     /* @var $repo rex_themesync_repo */
     protected $repo = null;
     
-    public function __construct($name, &$repo) {
+    protected $type = '';
+    
+    public function __construct($type, $name, &$repo) {
         $this->name = $name;
         $this->repo = $repo;
+        $this->type = $type;
         
         $this->key = preg_replace('`[^a-z0-9\\.]+`', '_', strtolower($this->name));
         //$this->key = preg_replace('`[^A-Za-z0-9\\-]`', '_', $this->key);
@@ -25,6 +28,9 @@ abstract class rex_themesync_item_base {
     }
     
     
+    public function getType() {
+        return $this->type;
+    }
     
     /**
      * Der Repo Cache kann dafür genutzt werden, dass das Repo repospezifische
