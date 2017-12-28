@@ -116,7 +116,7 @@ class rex_themesync_ftp_client {
     function get_contents($remote_file, $mode) {
         ob_implicit_flush(false);
         ob_start();
-        $result = $this->ftpClient->get("php://output", $remote_file, $mode);
+        $result = $this->connection->get("php://output", $remote_file, $mode);
         $data = ob_get_contents();
         ob_end_clean();
         
