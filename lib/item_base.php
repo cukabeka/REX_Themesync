@@ -52,7 +52,7 @@ abstract class rex_themesync_item_base {
         return $this->repoCache[$k];
     }
     
-    public function &hasRepoCache($k) {
+    public function hasRepoCache($k) {
         return isset($this->repoCache[$k]);
     }
     

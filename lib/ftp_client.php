@@ -85,7 +85,7 @@ class rex_themesync_ftp_client {
     }
     
     
-    public function listing($flags = DIRS | FILES) {
+    public function listing($flags = self::DIRS | self::FILES) {
         $dir = $this->pwd();
         $raw = $this->rawlist('.');
         //([0-9]+)  

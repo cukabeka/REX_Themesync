@@ -2,8 +2,8 @@
 
 
 abstract class rex_themesync_manager {
-    private $repo;
-    private $local;
+    private $repo = null;
+    private $local = null;
     
     private $type;
     
@@ -12,8 +12,6 @@ abstract class rex_themesync_manager {
     protected $addon;
     
     public function __construct($type, &$addon) {
-        $this->repo  = $repo;
-        $this->local = $local;
         $this->type = $type;
         $this->addon = $addon;
     }
