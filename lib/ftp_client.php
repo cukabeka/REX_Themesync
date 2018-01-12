@@ -84,6 +84,15 @@ class rex_themesync_ftp_client {
         } 
     }
     
+    public function dir_exists($d) {
+        $pwd = $this->pwd();
+        if (@$this->chdir($d)) {
+            $this->chdir($pwd);
+            return true;
+        }
+        return false;
+    }
+    
     
     public function listing($flags = self::DIRS | self::FILES) {
         $dir = $this->pwd();

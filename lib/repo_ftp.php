@@ -36,9 +36,12 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
     
     protected function _list($type) {
         $dir = $this->dir . $type. 's/';
-        if (!$this->ftpClient->chdir($dir)) {
+        
+        if (!$this->ftpClient->dir_exists($dir)) {
             return;
         }
+        
+        $this->ftpClient->chdir($dir);
         
         $dirList = $this->ftpClient->listing();
         if (!is_array($dirList)) {
@@ -76,7 +79,7 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
 
     protected function _isExisting(&$item) {
         $type = $item->getType();
-        return $this->ftpClient->chdir($this->dir . $type.'s/'.$item->getName());
+        return $this->ftpClient->dir_exists($this->dir . $type.'s/'.$item->getName());
     }
 
     /*public function loadModuleInputOutput(\rex_themesync_module &$module) {
@@ -109,9 +112,9 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
         
         $dir = $this->dir . 'modules/' . $module->getName();
         
-        if (!$this->ftpClient->chdir($dir)) {
+        if (!$this->ftpClient->dir_exists($dir)) {
             $this->ftpClient->mkdir($dir);
-            if (!$this->ftpClient->chdir($dir)) {
+            if (!$this->ftpClient->dir_exists($dir)) {
                 return false;
             }
         } else {
@@ -119,6 +122,8 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
                 return false;
             }
         }
+        
+        $this->ftpClient->chdir($dir)
         
         $a = $this->saveModuleInputOutput($module);
         
@@ -149,9 +154,9 @@ class rex_themesync_repo_ftp extends rex_themesync_repo {
     protected function makeItemDir(&$item) {
         $dir = $this->dir . $item->getType() .'s/' . $item->getName();
         
-        if (!$this->ftpClient->chdir($dir)) {
+        if (!$this->ftpClient->dir_exists($dir)) {
             $this->ftpClient->mkdir($dir);
-            if (!$this->ftpClient->chdir($dir)) {
+            if (!$this->ftpClient->dir_exists($dir)) {
                 return false;
             }
         }
