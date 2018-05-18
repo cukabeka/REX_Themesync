@@ -18,8 +18,10 @@ abstract class rex_themesync_manager {
     
     protected function load_config() {
         if (is_null($this->config)) {
-            $file = rex_path::addonData('themesync', 'repo.yml');
-            $this->config = rex_file::getConfig($file);
+            $this->config = rex_config::get('themesync');
+            //file-based version
+            #$file = rex_path::addonData('themesync', 'repo.yml');
+            #$this->config = rex_file::getConfig($file);
         }
     }
     
