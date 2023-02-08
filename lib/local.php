@@ -47,6 +47,9 @@ class rex_themesync_local extends rex_themesync_source {
             try {
                 $sql = rex_sql::factory();
                 $sql->setQuery('SELECT * FROM `' . $table . '` WHERE name=?', [$item->getName()]);
+                if ($sql->getRows() === 0) {
+                    return;
+                }
                 $sql->getRow();
             } finally {
                 //$sql->
