@@ -17,7 +17,7 @@ if ($func == 'update') {
         ['pass', 'string'],
         ['dir', 'string'],
 
-        #['local_dir', 'string'],
+        //['local_dir', 'string'],
         ['classname', 'string']
 
 
