@@ -34,7 +34,7 @@ Eigene Module können **supereinfach** der Sammlung hinzugefügt werden!
 
 **Pflicht**
 
-1. im Ordner `modulsammlung/lib/module/` einen Ordner mit dem gewünschten Namen anlegen
+1. im Ordner `themesync/lib/module/` einen Ordner mit dem gewünschten Namen anlegen
 2. mindestens die Dateien `info.inc`,`config.inc`,`input.inc` und `output.inc` anlegen
 3. in der `info.inc` bitte kurz eintragen (in HTML) welche Funktionen und Vorraussetzungen das Modul hat. Hier ist auch der Platz für den Hinweis auf Besonderheiten des Moduls.
 4. `config.inc` füllen (Modulname / Status)
