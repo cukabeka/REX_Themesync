@@ -10,7 +10,10 @@ class rex_themesync_module_manager extends rex_themesync_manager {
         $repo = $this->getRepo();
         
         $module_key = $item->getKey();
+        $numericKey = $item->getNumericKey();
+        $config = $item->getConfig();
         $statusfarbe = '#f8a8e8;';
+        
         if ($mode === rex_themesync_source::REPO) {
             /* @var $local rex_themesync_local */
             $is_installed = $local->isModuleExisting($item);
@@ -35,9 +38,31 @@ class rex_themesync_module_manager extends rex_themesync_manager {
             <?php if ($is_installed) : ?><i class="glyphicon glyphicon-ok"></i><?php endif; ?>
                 </td>
                 <td data-title="<?= $this->addon->i18n('modul') ?>">
-                    <!--<input class="form-control" type="text" name="modul_name" value="<?= htmlentities($item->getName()) ?>">-->
-                    <label class="" for="<?= $module_key ?>_check"><?= htmlentities($item->getName()) ?></label>
+                    <label class="" for="<?= $module_key ?>_check">
+                        <?= htmlentities($item->getName()) ?>
+                    </label>
                     <code><?= $module_key ?></code>
+                    <?php if ($numericKey): ?>
+                        <span class="label label-info">Key: <?= htmlentities($numericKey) ?></span>
+                    <?php endif; ?>
+                    <?php if ($config): ?>
+                        <br/>
+                        <small class="text-muted">
+                            <?php if (isset($config['version'])): ?>
+                                <span class="label label-default">v<?= htmlentities($config['version']) ?></span>
+                            <?php endif; ?>
+                            <?php if (isset($config['description'])): ?>
+                                <?= htmlentities($config['description']) ?>
+                            <?php endif; ?>
+                            <?php if (isset($config['git']['branch'])): ?>
+                                <br/>
+                                <i class="fa fa-code-fork"></i> <?= htmlentities($config['git']['branch']) ?>
+                                <?php if (isset($config['git']['commit'])): ?>
+                                    @ <?= htmlentities(substr($config['git']['commit'], 0, 7)) ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </small>
+                    <?php endif; ?>
                     <div id="<?= $module_key ?>_info" class="collapse">
                         <p class="accordiontitle">Info</p>
                         <div style="padding: 10px; background: #f5f5f5; border: 1px solid #ccc;">

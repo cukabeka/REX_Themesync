@@ -10,6 +10,8 @@ class rex_themesync_template_manager extends rex_themesync_manager {
         $repo = $this->getRepo();
         
         $template_key = $item->getKey();
+        $numericKey = $item->getNumericKey();
+        $config = $item->getConfig();
         
         if ($mode === rex_themesync_source::REPO) {
             /* @var $local rex_themesync_local */
@@ -35,8 +37,31 @@ class rex_themesync_template_manager extends rex_themesync_manager {
             <?php if ($is_installed) : ?><i class="glyphicon glyphicon-ok"></i><?php endif; ?>
                 </td>
                 <td data-title="<?= $this->addon->i18n('modul') ?>">
-                    <label class="" for="<?= $template_key ?>_check"><?= htmlentities($item->getName()) ?></label>
+                    <label class="" for="<?= $template_key ?>_check">
+                        <?= htmlentities($item->getName()) ?>
+                    </label>
                     <code><?= $template_key ?></code>
+                    <?php if ($numericKey): ?>
+                        <span class="label label-info">Key: <?= htmlentities($numericKey) ?></span>
+                    <?php endif; ?>
+                    <?php if ($config): ?>
+                        <br/>
+                        <small class="text-muted">
+                            <?php if (isset($config['version'])): ?>
+                                <span class="label label-default">v<?= htmlentities($config['version']) ?></span>
+                            <?php endif; ?>
+                            <?php if (isset($config['description'])): ?>
+                                <?= htmlentities($config['description']) ?>
+                            <?php endif; ?>
+                            <?php if (isset($config['git']['branch'])): ?>
+                                <br/>
+                                <i class="fa fa-code-fork"></i> <?= htmlentities($config['git']['branch']) ?>
+                                <?php if (isset($config['git']['commit'])): ?>
+                                    @ <?= htmlentities(substr($config['git']['commit'], 0, 7)) ?>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </small>
+                    <?php endif; ?>
                 </td>
                 <td>
                     <?php if ($in_repo) : ?>
