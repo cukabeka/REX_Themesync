@@ -1,0 +1,18 @@
+
+themesync_title = Theme-Sync
+themesync_general_dummy[] = Rechte für Themesync-Addon
+
+
+themesync_fromrepo               = Von Repo
+themesync_torepo               = Zu Repo
+
+
+themesync_apply               = Anwenden
+
+
+
+themesync_module              = Module
+
+
+repo_yml = Repository-Daten im YML-Format
+repo_yml_help = Siehe readme.md für ein Beispiel

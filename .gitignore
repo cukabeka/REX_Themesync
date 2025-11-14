@@ -1,0 +1,74 @@
+# REDAXO Themesync .gitignore
+
+# REDAXO Core (if accidentally included)
+redaxo/cache/
+redaxo/data/log/
+redaxo/data/core/
+redaxo/data/addons/*/cache/
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+.cache/
+
+# Node.js (if using for assets)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Composer
+vendor/
+composer.lock
+
+# PHP
+.phpunit.result.cache
+
+# Testing
+tests/coverage/
+tests/.phpunit.result.cache
+
+# Build artifacts
+dist/
+build/
+
+# Local configuration (should not be committed)
+config.local.yml
+config.local.php
+local-config.php
+
+# FTP credentials (NEVER commit)
+*.ftp
+ftp-config.php
+
+# Database dumps
+*.sql
+*.sqlite
+*.db
+
+# Screenshots and exports
+screenshots/
+exports/
+
+# Personal notes
+notes.txt
+todo.txt
+scratchpad.md
