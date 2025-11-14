@@ -1,0 +1,21 @@
+# Modul-Metadaten
+name: "Text, Bild, Video, Link"
+key: "0010"
+description: "Universalmodul für Text, Medien und Links mit MForm/MBlock"
+version: "2.1.0"
+author: "Stefan Beyer"
+
+# REDAXO-spezifisch
+category: "content"
+dependencies:
+  - "mform"
+  - "mblock"
+
+# Dateien
+files:
+  input: "input.inc"
+  output: "output.inc"
+  config: "config.inc"
+  info: "info.inc"
+  mediamanager: "mediamanager.inc"
+  styles_scss: "styles_scss.inc"
