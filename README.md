@@ -1,31 +1,18 @@
-## Modulsammlung für REDAXO 5
+# Themesync
 
-Ziel dieses Addons ist es einfach einige Module für REDAXO 5.x installieren zu können.
+## Konfiguration
 
-Weitere Informationen finden sich in der Dokumentation (Plugin installieren :-)).
+Nach dem Installieren die `repo.yml` im `data`-Ordner des Addons bearbeiten.
 
-<img src="https://raw.githubusercontent.com/FriendsOfREDAXO/Modulsammlung/assets/modulsammlung_03.png" style="max-width: 888px" />
+### FTP-Repository
 
----
+    classname: 'rex_themesync_repo_ftp'
+    host: '...'
+    user: '...'
+    pass: '...'
+    dir: '/pfad/zu/repo/root/'
 
-* ToDo -> [ISSUES](https://github.com/FriendsOfREDAXO/Modulsammlung/issues)
-* Changelog -> [CHANGELOG.md](CHANGELOG.md)
-* Lizenz ->  [LICENSE.md](LICENSE.md)
+### Repository in lokalem Ordner
 
----
-
-### Autor
-
-**Friends Of REDAXO**
-
-* http://www.redaxo.org
-* https://github.com/FriendsOfREDAXO
-
-**Projekt-Lead**
-
-[Oliver Kreischer](https://github.com/olien)
-
-___
-### Credits
-
-[Unite Gallery](https://github.com/vvvmax/unitegallery), [skrollr](https://github.com/Prinzhorn/skrollr), [Owl Carousel](https://github.com/OwlFonk/OwlCarousel), [PHP spreadsheet reader](https://github.com/nuovo/spreadsheet-reader), [php-excel-reader](https://code.google.com/archive/p/php-excel-reader/)
+    classname: 'rex_themesync_repo_localfilesystem'
+    repo: '/pfad/zu/repo/root/'

@@ -1,27 +1,30 @@
 # Alle hier gesetzten Werte können über $addon->getProperty($key) abgefragt werden
 
-package: modulsammlung
-version: '4.7.7.2'
-author: 'Friends Of REDAXO'
-supportpage: https://github.com/FriendsOfREDAXO/REX5-Modulsammlung/issues
-info: 'Idee und Realisierung der ersten Version: Oliver Kreischer / concedra.de'
+package: themesync
+version: '0.1'
+author: 'Stefan Beyer'
+supportpage:
+info: ''
 compile: 0
 
 page:
     title: 'translate:title'
-    perm: modulsammlung[]
+    perm: themesync[]
     icon: rex-icon fa-plus-square
     pjax: false
     subpages:
-        module: {title: 'translate:module'}
-        module_mform_mblock: {title: 'translate:module_mform_mblock'}
-        templates: {title: 'translate:templates'}
+        modules:
+            title: 'Module'
+        match-modules:
+            title: 'Modul Neu Beta'
+        templates:
+            title: 'Templates'
+        config:
+            title: 'Config'
         info:
             title: 'Info'
             itemclass: 'pull-right'
             subpages:
                 info: { title: 'Info'}
-                moduluebersicht: { title: 'translate:moduluebersicht'}
-                templateuebersicht: { title: 'translate:templateuebersicht'}
                 changelog: { title: 'translate:changelog'}
                 lizenz: { title: 'translate:lizenz'}

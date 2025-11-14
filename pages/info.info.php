@@ -1,8 +1,8 @@
 <?php
 
-$file = rex_file::get(rex_path::addon('modulsammlung','README.md'));
+$file = rex_file::get(rex_path::addon('themesync','README.md'));
 $Parsedown = new Parsedown();
-$content =  '<div id="modulsammlung">'.$Parsedown->text($file);
+$content =  '<div id="themesync">'.$Parsedown->text($file);
 
 
 $fragment = new rex_fragment();

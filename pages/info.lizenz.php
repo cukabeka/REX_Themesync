@@ -1,8 +1,8 @@
 <?php
-$file = rex_file::get(rex_path::addon('modulsammlung','LICENSE.md'));
+$file = rex_file::get(rex_path::addon('themesync','LICENSE.md'));
 $Parsedown = new Parsedown();
 
-$content =  '<div id="modulsammlung">'.$Parsedown->text($file).'</div>';
+$content =  '<div id="themesync">'.$Parsedown->text($file).'</div>';
 
 $fragment = new rex_fragment();
 $fragment->setVar('title', 'Lizenz');
