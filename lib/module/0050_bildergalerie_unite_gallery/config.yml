@@ -1,0 +1,20 @@
+# Modul-Metadaten
+name: "Bildergalerie Unite Gallery"
+key: "0050"
+description: "Bildergalerie mit Unite Gallery Plugin"
+version: "1.5.0"
+author: "Stefan Beyer"
+
+# REDAXO-spezifisch
+category: "media"
+dependencies:
+  - "mform"
+  - "mblock"
+
+# Dateien
+files:
+  input: "input.inc"
+  output: "output.inc"
+  config: "config.inc"
+  info: "info.inc"
+  mediamanager: "mediamanager.inc"

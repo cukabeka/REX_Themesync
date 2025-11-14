@@ -1,0 +1,15 @@
+# Template-Metadaten
+name: "Quickstart"
+key: "0010"
+description: "Standard Quickstart Template"
+version: "1.0.0"
+author: "Stefan Beyer"
+
+# Template-spezifisch
+ctype: "default"
+
+# Dateien
+files:
+  template: "template.inc"
+  config: "config.inc"
+  info: "info.inc"
